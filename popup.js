@@ -22,6 +22,7 @@
  *													Added lightbox keyboard navigation (a,d,up,down,left,right).
  *													Fixed lightbox behavior varying between Chrome and Firefox.
  *													Fixed lightbox naviagtion keys not including a preventDefault() clause.
+ *		v0.1.0.0013				Nov 14, 2015		Fixed key commands for back.
  */
 
 function _i(i){return document.getElementById(i);}
@@ -167,7 +168,7 @@ _g.pu = (_g.popup = {
 window.addEventListener('keyup', function(e){
 	if(_g.pu.lbOpen){
 		e.preventDefault();
-		~[39,40,68].indexOf(e.keyCode) ? _g.pu.lightbox('api',_g.pu.lbSrc,_g.pu.lbLayt,++_g.pu.lbIndx) : ~[37.38,65].indexOf(e.keyCode) ? _g.pu.lightbox('api',_g.pu.lbSrc,_g.pu.lbLayt,--_g.pu.lbIndx) : !1;
+		~[39,40,68].indexOf(e.keyCode) ? _g.pu.lightbox('api',_g.pu.lbSrc,_g.pu.lbLayt,++_g.pu.lbIndx) : ~[37,38,65].indexOf(e.keyCode) ? _g.pu.lightbox('api',_g.pu.lbSrc,_g.pu.lbLayt,--_g.pu.lbIndx) : !1;
 	}
 	
 });
