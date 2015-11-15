@@ -23,6 +23,7 @@
  *													Fixed lightbox behavior varying between Chrome and Firefox.
  *													Fixed lightbox naviagtion keys not including a preventDefault() clause.
  *		v0.1.0.0013				Nov 14, 2015		Fixed key commands for back.
+ *		v0.1.1.0014				Nov 15, 2015		Added styling
  */
 
 function _i(i){return document.getElementById(i);}
@@ -52,6 +53,18 @@ if(typeof Graphene !== 'object'){
 	})(),
 		_g = Graphene;
 }
+
+var __cms__ = document.createElement("style");
+__cms__.innerHTML	 = '#popup {position:relative;width:500px;height:auto;margin:auto;background:#fff;vertical-align:middle;}';
+__cms__.innerHTML	+= '#popup-shade {position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:1000;display:inline-flex;}';
+__cms__.innerHTML	+= '#popup-title {padding:6px;background:#f8f8f8;width:488px;text-align:center;}';
+__cms__.innerHTML	+= '#popup-content {padding:10px;}';
+__cms__.innerHTML	+= '#popup-confirm {position:relative;width:410px;margin:20px auto auto;}';
+__cms__.innerHTML	+= '#popup-yes {background:#444444;margin-right:10px;}';
+__cms__.innerHTML	+= '#popup-no {background:#ddd;}';
+__cms__.innerHTML	+= '.popup-option {cursor:pointer;padding:8px;width:184px;text-align:center;text-transform:uppercase;color:#FFF;display:inline-block;}';
+__cms__.innerHTML	+= '.popup-button {padding:6px;width:200px;background:#444444;color:#fff;margin:auto;margin-top:10px;font-weight:bold;text-align:center;cursor:pointer;}';
+document.documentElement.appendChild(__cms__);
 
 _g.pu = (_g.popup = {
 	lbOpen		: !1,
