@@ -25,6 +25,7 @@
  *		v0.1.0.0013				Nov 14, 2015		Fixed key commands for back.
  *		v0.1.1.0014				Nov 15, 2015		Added styling
  *		v0.1.1.0015				Dec 22, 2015		Added required functions for standalone
+ *		v0.1.1.0016				Dec 22, 2015		Fixed references to document.body for standalone
  */
 
 function _i(i){return document.getElementById(i);}
@@ -173,7 +174,7 @@ _g.pu = (_g.popup = {
 			var lb = document.createElement('div');
 			lb.id = 'lightbox-shade';
 			lb.innerHTML = '<div id="lightbox"><table><tr><td style="font-size:0px;"><div id="lightbox-view"><a lightbox><div id="lightbox-next"></div></a><a lightbox><div id="lightbox-prev"></div></a></div></td>' + /* '<td style="vertical-align:top;"><div id="lightbox-comments"><div class="post-header"><a><img class="post-avatar"></a><div class="post-name"><a><b>Loading...</b></a></div><div class="post-time"><a>Loading...</a></div></div><div class="post-content"><br><br><br><br><br><br></div></div></td>' + */ '</tr></table></div>';
-			body.insertBefore(lb, body.children[0]);
+			document.body.insertBefore(lb, document.body.children[0]);
 			window.setTimeout(function(){
 				window.addEventListener('click', _g.pu.lbClick);
 			}, 500);
