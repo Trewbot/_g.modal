@@ -1,7 +1,7 @@
 /*
  *	Graphene Popup
  *	Written by Trewbot
- *	May 15, 2015
+ *	Nov 15, 2015
  *
  *	Version:				Date:				Description:
  *		v0.1.0.0001				Mar 23, 2015		Moved popup script to separate file.
@@ -24,12 +24,35 @@
  *													Fixed lightbox naviagtion keys not including a preventDefault() clause.
  *		v0.1.0.0013				Nov 14, 2015		Fixed key commands for back.
  *		v0.1.1.0014				Nov 15, 2015		Added styling
+ *		v0.1.1.0015				Dec 22, 2015		Added required functions for standalone
  */
 
 function _i(i){return document.getElementById(i);}
 function _c(c){return document.getElementsByClassName(c);}
 Element.prototype._c = function(c){return this.getElementsByClassName(c);}
- 
+Element.prototype.parentAnchor = function () {
+	var t = this;
+	if (t == null)
+		return false;
+	while (t.tagName.toLowerCase() !== 'html') {
+		if (typeof t.href == 'string')
+			return t;
+		t = t.parentElement;
+	}
+	return false;
+}
+ajax = function(url, type, header, ops){
+	var r = new XMLHttpRequest(),
+	o = ops || {};
+	r.open(type, url, !0);
+	r.withCredentials = typeof o.cred == 'boolean' ? o.cred : !0;
+	r.setRequestHeader("Content-type", o.type || "application/x-www-form-urlencoded");
+	r.send(header);
+	typeof o.load == 'function' && r.addEventListener('load', function(){o.load(r);});
+	typeof o.change == 'function' && (r.onreadystatechange = o.change);
+	return r;
+}
+
 if(typeof Graphene !== 'object'){
 	var Graphene = new(function(){
 		this.pop = true;
