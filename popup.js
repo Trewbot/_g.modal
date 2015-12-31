@@ -27,6 +27,7 @@
  *		v0.1.1.0015				Dec 22, 2015		Added required functions for standalone
  *		v0.1.1.0016				Dec 22, 2015		Fixed references to document.body for standalone
  *		v0.1.1.0017				Dec 22, 2015		Added lightbox styling
+ *		v0.1.1.0018				Dec 31, 2015		Removed extraneous details
  */
 
 function _i(i){return document.getElementById(i);}
@@ -60,21 +61,6 @@ if(typeof Graphene !== 'object'){
 		this.pop = true;
 		this.v = '';
 		this.url = 'http://gra.phene.co';
-		this.ajax = function(url, type, header, ops){
-			var r = new XMLHttpRequest(),
-			o = ops || {};
-			r.open(type, url, true);
-			r.withCredentials = typeof o.cred == 'boolean' ? o.cred : true;
-			r.setRequestHeader("Content-type", typeof o.type == 'string' ? o.type : "application/x-www-form-urlencoded");
-			r.send(header);
-			if(typeof o.load == 'function')
-				r.addEventListener('load', function(){
-					o.load(r);
-				});
-			if(typeof o.change == 'function')
-				r.onreadystatechange = o.change;
-			return r;
-		};
 	})(),
 		_g = Graphene;
 }
