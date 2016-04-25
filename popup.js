@@ -1,33 +1,7 @@
 /*
  *	Graphene Popup
  *	Written by Trevor J Hoglund
- *	Dec 22, 2015
- *
- *	Version:				Date:				Description:
- *		v0.1.0.0001				Mar 23, 2015		Moved popup script to separate file.
- *		v0.1.0.0002				Mar 23, 2015		Added lightbox framework.
- *		v0.1.0.0003				Mar 23, 2015		Added lightbox base url.
- *		v0.1.0.0004				Mar 23, 2015		Added lightbox default back URL.
- *		v0.1.0.0005				Mar 23, 2015		Added AJAX to Graphene.
- *		v0.1.0.0006				Mar 23, 2015		Added lightbox parameters.
- *		v0.1.0.0007				Mar 23, 2015		Added lightbox AJAX calling to get lists.
- *		v0.1.0.0008				Mar 24, 2015		Added lightbox layout parsing.
- *		v0.1.0.0009				Mar 24, 2015		Added lightbox opening script.
- *		v0.1.0.0010				Mar 24, 2015		Fixed API calls having credentials set to true.
- *													Added lightbox navigation.
- *													Fixed _g.pu.lbIndx being below 0.
- *													Fixed lightbox navigation direction.
- *		v0.1.0.0011				Mar 24, 2015		Added lightbox closing script.
- *		v0.1.0.0012				May 15, 2015		Changed lightbox naviagtion links' actions to onclick rather than href.
- *													Added lightbox keyboard navigation (a,d,up,down,left,right).
- *													Fixed lightbox behavior varying between Chrome and Firefox.
- *													Fixed lightbox naviagtion keys not including a preventDefault() clause.
- *		v0.1.0.0013				Nov 14, 2015		Fixed key commands for back.
- *		v0.1.1.0014				Nov 15, 2015		Added styling
- *		v0.1.1.0015				Dec 22, 2015		Added required functions for standalone
- *		v0.1.1.0016				Dec 22, 2015		Fixed references to document.body for standalone
- *		v0.1.1.0017				Dec 22, 2015		Added lightbox styling
- *		v0.1.1.0018				Dec 31, 2015		Removed extraneous details
+ *	Apr 25, 2016
  */
 
 function _i(i){return document.getElementById(i);}
@@ -195,7 +169,34 @@ _g.pu = (_g.popup = {
 			_i('lightbox-shade').remove();
 			window.removeEventListener('click', _g.pu.lbClick);
 		}
-	}
+	},
+	changes	: [
+		["v0.1.0.0001","Mar 23, 2015","Moved popup script to separate file."],
+		["v0.1.0.0002","Mar 23, 2015","Added lightbox framework."],
+		["v0.1.0.0003","Mar 23, 2015","Added lightbox base url."],
+		["v0.1.0.0004","Mar 23, 2015","Added lightbox default back URL."],
+		["v0.1.0.0005","Mar 23, 2015","Added AJAX to Graphene."],
+		["v0.1.0.0006","Mar 23, 2015","Added lightbox parameters."],
+		["v0.1.0.0007","Mar 23, 2015","Added lightbox AJAX calling to get lists."],
+		["v0.1.0.0008","Mar 24, 2015","Added lightbox layout parsing."],
+		["v0.1.0.0009","Mar 24, 2015","Added lightbox opening script."],
+		["v0.1.0.0010","Mar 24, 2015","Fixed API calls having credentials set to true."],
+		["v0.1.0.0010","Mar 24, 2015","Added lightbox navigation."],
+		["v0.1.0.0010","Mar 24, 2015","Fixed _g.pu.lbIndx being below 0."],
+		["v0.1.0.0010","Mar 24, 2015","Fixed lightbox navigation direction."],
+		["v0.1.0.0011","Mar 24, 2015","Added lightbox closing script."],
+		["v0.1.0.0012","May 15, 2015","Changed lightbox naviagtion links' actions to onclick rather than href."],
+		["v0.1.0.0012","May 15, 2015","Added lightbox keyboard navigation (a,d,up,down,left,right)."],
+		["v0.1.0.0012","May 15, 2015","Fixed lightbox behavior varying between Chrome and Firefox."],
+		["v0.1.0.0012","May 15, 2015","Fixed lightbox naviagtion keys not including a preventDefault() clause."],
+		["v0.1.0.0013","Nov 14, 2015","Fixed key commands for back."],
+		["v0.1.1.0014","Nov 15, 2015","Added styling"],
+		["v0.1.1.0015","Dec 22, 2015","Added required functions for standalone"],
+		["v0.1.1.0016","Dec 22, 2015","Fixed references to document.body for standalone"],
+		["v0.1.1.0017","Dec 22, 2015","Added lightbox styling"],
+		["v0.1.1.0018","Dec 31, 2015","Removed extraneous details"],
+		["v0.1.1.0019","Apr 25, 2016","Added changelog as array"]
+	]
 });
 
 window.addEventListener('keyup', function(e){
@@ -203,5 +204,4 @@ window.addEventListener('keyup', function(e){
 		e.preventDefault();
 		~[39,40,68].indexOf(e.keyCode) ? _g.pu.lightbox('api',_g.pu.lbSrc,_g.pu.lbLayt,++_g.pu.lbIndx) : ~[37,38,65].indexOf(e.keyCode) ? _g.pu.lightbox('api',_g.pu.lbSrc,_g.pu.lbLayt,--_g.pu.lbIndx) : !1;
 	}
-	
 });
