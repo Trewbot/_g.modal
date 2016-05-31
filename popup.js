@@ -229,6 +229,7 @@ _g.pu = (_g.popup = {
 			if(_i('popup-shade')) _i('popup-shade').remove();
 		}
 		this.next();
+		return this;
 	},
 	collect		: function(){
 		var ret = {},
@@ -264,8 +265,9 @@ _g.pu = (_g.popup = {
 		["v0.1.1.0016","Dec 22, 2015","Fixed references to document.body for standalone"],
 		["v0.1.1.0017","Dec 22, 2015","Added lightbox styling"],
 		["v0.1.1.0018","Dec 31, 2015","Removed extraneous details"],
-		["p0.1.1.0019","Apr 25, 2016","Added changelog as array"]
-		["p0.2.0.0020","May 30, 2016","Added tutorial framework (popups only)"]
+		["p0.1.1.0019","Apr 25, 2016","Added changelog as array"],
+		["p0.2.0.0020","May 30, 2016","Added tutorial framework (popups only)"],
+		["p0.2.0.0021","May 30, 2016","Added a return to the tutorial command"]
 	]
 });
 
