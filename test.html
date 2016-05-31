@@ -2,8 +2,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 	<title>popup</title>
-	<link rel="stylesheet" href="http://phene.co/style.css">
-	<link rel="shortcut icon" type="image/png" href="http://phene.co/assets/fav.png"/>
+	<link rel="stylesheet" href="style.css">
+	<link rel="stylesheet" href="prism.css">
 	<script	src="popup.js"></script>
 </head>
 <body>
@@ -128,7 +128,41 @@
 		</div>
 		<br><br>
 		<br><br>
+		<div id="tutorials">
+			<b><a href="#tutorials">tutorials</a></b><hr>
+			<p>
+				the tutorial framework allows you to create an array of defined steps that the user should follow.
+				running the <code>_g.pu.tutorial()</code> command returns the tutorial as an object.
+				this command has two parameters: first is the array of steps, second is an optional object of parameters to be used when rendering popups.
+				here is an example tutorial command:
+			</p>
+<pre><code class="language-javascript">var tut = new _g.popup.tutorial(
+	[
+		{
+			type : "popup",
+			title : "Welcome!",
+			text : "This popup would contain a greeting.",
+			showExitButton : true
+		},
+		{
+			type : "popup",
+			title : "Welcome!",
+			text : "This would be the second info box."
+		}
+	],
+	{
+		titleColor : "#B2E1D9",
+		titleTextColor : "#FFFFFF"
+	}
+);</code></pre>
+			<p>
+				<a onclick='new _g.popup.tutorial([{type:"popup",title:"Welcome!",text:"This popup would contain a greeting.",showExitButton:true},{type:"popup",title:"Welcome!",text:"This would be the second info box."}],{titleColor:"#B2E1D9",titleTextColor:"#FFFFFF"});'>click here to test.</a>
+			</p>
+		</div>
+		<br><br>
+		<br><br>
 		<a href="http://scripts.phene.co">scripts</a> . <a href="http://phene.co">phene.co</a>
 	</div>
+	<script	src="prism.js"></script>
 </body>
 </html>
