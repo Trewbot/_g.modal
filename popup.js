@@ -179,6 +179,9 @@ _g.pu = (_g.popup = {
 				_g.pu.lbInfo[source] = JSON.parse(res.response);
 				open();
 			}}); else open();
+		} else {
+			_g.pu.lbInfo[source] = JSON.parse(source);
+			open();
 		}
 	},
 	lbClick 	: function(e){
@@ -267,7 +270,8 @@ _g.pu = (_g.popup = {
 		["v0.1.1.0018","Dec 31, 2015","Removed extraneous details"],
 		["p0.1.1.0019","Apr 25, 2016","Added changelog as array"],
 		["p0.2.0.0020","May 30, 2016","Added tutorial framework (popups only)"],
-		["p0.2.0.0021","May 30, 2016","Added a return to the tutorial command"]
+		["p0.2.0.0021","May 30, 2016","Added a return to the tutorial command"],
+		["p0.2.0.0022","Jun 27, 2016","Fixed object source lightboxes (must be JSON string)"]
 	]
 });
 
