@@ -125,6 +125,7 @@ _g.pu = (_g.popup = {
 				}
 			}
 			_g.pu.lbList = list;
+			if(typeof _g.pu.lbIndx == "string") _g.pu.lbIndx = list.indexOf(_g.pu.lbIndx);
 			if(_g.pu.lbIndx < 0) _g.pu.lbIndx = 0;
 			if(_g.pu.lbIndx >= list.length) _g.pu.lbIndx = list.length - 1;
 			var img = new Image();
@@ -273,7 +274,8 @@ _g.pu = (_g.popup = {
 		["p0.2.0.0020","May 30, 2016","Added tutorial framework (popups only)"],
 		["p0.2.0.0021","May 30, 2016","Added a return to the tutorial command"],
 		["p0.2.0.0022","Jun 27, 2016","Fixed object source lightboxes (must be JSON string)"],
-		["p0.2.0.0023","Jun 29, 2016","Fixed layouts with names after * failing"]
+		["p0.2.0.0023","Jun 29, 2016","Fixed layouts with names after * failing"],
+		["p0.2.0.0024","Jun 29, 2016","Added option to set index based on url of image"]
 	]
 });
 
