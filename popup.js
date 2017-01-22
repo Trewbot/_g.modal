@@ -1,7 +1,7 @@
 /*
  *	Graphene Popup
  *	Written by Trevor J Hoglund
- *	Jun 29, 2016
+ *	2017.01.22
  */
 
 function _i(i){return document.getElementById(i);}
@@ -39,26 +39,26 @@ if(typeof Graphene !== 'object'){
 		_g = Graphene;
 }
 
-var __cms__ = document.createElement("style");
-__cms__.innerHTML	 = '#popup {position:relative;width:500px;height:auto;margin:auto;background:#fff;vertical-align:middle;}';
-__cms__.innerHTML	+= '#popup-shade {position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:1000;display:inline-flex;}';
-__cms__.innerHTML	+= '#popup-title {padding:6px;background:#f8f8f8;width:488px;text-align:center;}';
-__cms__.innerHTML	+= '#popup-content {padding:10px;}';
-__cms__.innerHTML	+= '#popup-confirm {position:relative;width:410px;margin:20px auto auto;}';
-__cms__.innerHTML	+= '#popup-yes {background:#444444;margin-right:10px;}';
-__cms__.innerHTML	+= '#popup-no {background:#ddd;}';
-__cms__.innerHTML	+= '.popup-option {cursor:pointer;padding:8px;width:184px;text-align:center;color:#FFF;display:inline-block;}';
-__cms__.innerHTML	+= '.popup-button {padding:6px;width:200px;background:#444444;color:#fff;margin:auto;margin-top:10px;font-weight:bold;text-align:center;cursor:pointer;}';
-__cms__.innerHTML	+= '#lightbox {position:relative;min-width:500px;height:auto;margin:auto;background:#fff;vertical-align:middle;}';
-__cms__.innerHTML	+= '#lightbox-shade {position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:1000;display:inline-flex;}';
-__cms__.innerHTML	+= '#lightbox-view {position:relative;min-width:500px;background:#000;display:inline-flex;min-width:500px;min-height:500px;}';
-__cms__.innerHTML	+= '#lightbox-image {margin:auto;vertical-align:middle;display:block;}';
-__cms__.innerHTML	+= '#lightbox-comments {width:300px;text-align:top;}';
-__cms__.innerHTML	+= '#lightbox-prev {position:absolute;cursor:pointer;z-index:1;height:100%;top:0;right:0;}';
-__cms__.innerHTML	+= '#lightbox-next {position:absolute;cursor:pointer;z-index:1;width:150px;height:100%;top:0;left:0;}';
-__cms__.innerHTML	+= '#lightbox table {border:0;padding:0;margin:0;}';
-__cms__.innerHTML	+= '#lightbox td {border:0;padding:0;}';
-document.documentElement.appendChild(__cms__);
+(POPUP_STYLE = document.createElement("style")).innerHTML
+	= '#popup				{position:relative;width:500px;height:auto;margin:auto;background:#fff;vertical-align:middle;}'
+	+ '#popup-shade			{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:1000;display:inline-flex;}'
+	+ '#popup-title			{padding:6px;background:#f8f8f8;width:488px;text-align:center;}'
+	+ '#popup-content		{padding:10px;}'
+	+ '#popup-confirm		{position:relative;width:410px;margin:20px auto auto;}'
+	+ '#popup-yes			{background:#444444;margin-right:10px;}'
+	+ '#popup-no			{background:#ddd;}'
+	+ '.popup-option		{cursor:pointer;padding:8px;width:184px;text-align:center;color:#FFF;display:inline-block;}'
+	+ '.popup-button		{padding:6px;width:200px;background:#444444;color:#fff;margin:auto;margin-top:10px;font-weight:bold;text-align:center;cursor:pointer;}'
+	+ '#lightbox			{position:relative;min-width:500px;height:auto;margin:auto;background:#fff;vertical-align:middle;}'
+	+ '#lightbox-shade		{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:1000;display:inline-flex;}'
+	+ '#lightbox-view		{position:relative;min-width:500px;background:#000;display:inline-flex;min-width:500px;min-height:500px;}'
+	+ '#lightbox-image		{margin:auto;vertical-align:middle;display:block;}'
+	+ '#lightbox-comments	{width:300px;text-align:top;}'
+	+ '#lightbox-prev		{position:absolute;cursor:pointer;z-index:1;height:100%;top:0;right:0;}'
+	+ '#lightbox-next		{position:absolute;cursor:pointer;z-index:1;width:150px;height:100%;top:0;left:0;}'
+	+ '#lightbox table		{border:0;padding:0;margin:0;}'
+	+ '#lightbox td			{border:0;padding:0;}';	
+document.documentElement.appendChild(POPUP_STYLE);
 
 _g.pu = (_g.popup = {
 	lbOpen		: !1,
@@ -275,7 +275,8 @@ _g.pu = (_g.popup = {
 		["p0.2.0.0021","May 30, 2016","Added a return to the tutorial command"],
 		["p0.2.0.0022","Jun 27, 2016","Fixed object source lightboxes (must be JSON string)"],
 		["p0.2.0.0023","Jun 29, 2016","Fixed layouts with names after * failing"],
-		["p0.2.0.0024","Jun 29, 2016","Added option to set index based on url of image"]
+		["p0.2.0.0024","Jun 29, 2016","Added option to set index based on url of image"],
+		["p0.2.0.0025","Jan 22, 2017","Refactoring"]
 	]
 });
 
