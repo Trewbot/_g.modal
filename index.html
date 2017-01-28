@@ -1,16 +1,15 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-	<title>popup</title>
+	<title>modal</title>
 	<link rel="stylesheet" href="style.css">
-	<link rel="stylesheet" href="prism.css">
-	<script	src="popup.js"></script>
+	<script	src="modal.js"></script>
 </head>
 <body>
 	<div class="content">
-		<b><a href="http://scripts.phene.co/popup" id="scripts">popup</a></b><hr>
+		<b><a href="http://scripts.phene.co/modal" id="scripts">modal</a></b><hr>
 		<p>
-			_g.popup is a javascript script built to render popups for user interfaces, this includes not only informational popups but also user input, lightboxes, <span>and tutorials</span>.
+			_g.modal is a javascript script built to render modals for user interfaces, this includes not only informational modals but also user input, lightboxes, <span>and tutorials</span>.
 			the script was originally designed for <a href="http://gra.phene.co">Graphene</a> and therefore uses the conventions for related _g scripts.
 		</p>
 		<br><br>
@@ -18,30 +17,30 @@
 		<div id="start">
 			<b><a href="#start">getting started</a></b><hr>
 			<p>
-				to begin using the popup script, one must first include the library in the html file.
-				<a target="_blank" href="http://scripts.phene.co/popup/0.1.1.0017.min">the source file can be downloaded here and put on a cdn</a>
+				to begin using the modal script, one must first include the library in the html file.
+				<a target="_blank" href="http://scripts.phene.co/modal/0.1.1.0017.min">the source file can be downloaded here and put on a cdn</a>
 				or use the following script tag to include it directly from phene.co:
 			</p>
-			<pre><code class="language-markup">&lt;script src="http://scripts.phene.co/popup/0.1.1.0017"&gt;&lt;/script&gt;</code></pre>
+			<pre><code class="language-markup">&lt;script src="http://scripts.phene.co/modal/0.1.1.0017"&gt;&lt;/script&gt;</code></pre>
 		</div>
 		<br><br>
 		<br><br>
-		<div id="info-popup">
-			<b><a href="#info-popup">informational popups</a></b><hr>
+		<div id="info-modal">
+			<b><a href="#info-modal">informational modals</a></b><hr>
 			<p>
-				info popups are made using the <code>_g.popup.open()</code> function.
+				info modals are made using the <code>_g.modal.open()</code> function.
 				the only argument for this function is the options object.
 				here is a simple example:
 			</p>
-<pre><code class="language-javascript">_g.popup.open({
+<pre><code class="language-javascript">_g.modal.open({
 	title	: "Pop!",
 	text	: "Goes the weasel!"
 });</code></pre>
 			<p>
-				<a onclick="_g.pu.open({title:'Pop!',text:'Goes the weasel!'});">click here to test</a>
+				<a onclick="_g.mo.open({title:'Pop!',text:'Goes the weasel!'});">click here to test</a>
 			</p>
 			<p>
-				here is a list of options for the info popup:
+				here is a list of options for the info modal:
 			</p>
 			<table>
 				<thead>
@@ -52,12 +51,12 @@
 				<tr>
 					<td>width</td>
 					<td>string</td>
-					<td>the width of the popup, should include units (default: 500px)</td>
+					<td>the width of the modal, should include units (default: 500px)</td>
 				</tr>
 				<tr>
 					<td>title</td>
 					<td>string</td>
-					<td>the title which is displayed at the top of the popup, if not present then there is no title bar rendered</td>
+					<td>the title which is displayed at the top of the modal, if not present then there is no title bar rendered</td>
 				</tr>
 				<tr>
 					<td>titleColor</td>
@@ -72,7 +71,7 @@
 				<tr>
 					<td>text</td>
 					<td>string</td>
-					<td>the main text of the popup (required)</td>
+					<td>the main text of the modal (required)</td>
 				</tr>
 				<tr>
 					<td>textCenter</td>
@@ -82,19 +81,46 @@
 				<tr>
 					<td>confirm</td>
 					<td>boolean</td>
-					<td>creates a 'yes' and 'no' button for confirmation, requires an 'onyes' function to be ran when 'yes' is clicked</td>
+					<td>creates a 'yes' and 'no' button for confirmation, returns a promise that can be handled with <code>.then()</code>.</td>
 				</tr>
 			</table>
+			<p>
+				here is a quick example of using the confirm option.
+				here the <code>window.setTimeout()</code> is used to ensure the modals made after the user input are only opened once all events are ran to close the original prompt.
+			</p>
+<pre><code class="language-javascript">_g.modal.open({
+	title	: "Approval Required!",
+	text	: "Allow this action?",
+    confirm : true
+}).then(
+	()=>
+		window.setTimeout(()=>{
+			_g.mo.open({
+				text : 'Approved',
+				textCenter : true
+			})
+		},0),
+	()=>
+		window.setTimeout(()=>{
+			_g.mo.open({
+				text : 'Rejected',
+				textCenter : true
+			})
+		},0)
+);</code></pre>
+			<p>
+				<a onclick="_g.modal.open({title:'Approval Required!',text:'Allow this action?',confirm:true}).then(()=>window.setTimeout(()=>{_g.mo.open({text:'Approved',textCenter:true})},0),()=>window.setTimeout(()=>{_g.mo.open({text:'Rejected',textCenter:true})},0));">click here to test.</a>	
+			</p>
 		</div>
 		<br><br>
 		<br><br>
 		<div id="lightboxes">
 			<b><a href="#lightboxes">lightboxes</a></b><hr>
 			<p>
-				similarly, lightboxes are called with the <code>_g.popup.lightbox()</code> function.
+				similarly, lightboxes are called with the <code>_g.modal.lightbox()</code> function.
 				this function has four arguments like so:
 			</p>
-			<pre><code class="language-javascript">_g.popup.lightbox(type,source,layout,index);</code></pre>
+			<pre><code class="language-javascript">_g.modal.lightbox(type,source,layout,index);</code></pre>
 			<p>
 				the type is either <code>object</code> or <code>api</code>, anything other than these is treated as <code>object</code>.
 			</p>
@@ -116,14 +142,14 @@
 			<p>
 				here is an example used on <a href="http://notes.phene.co/diffeq/1ed">notes.phene.co</a> to read the pages of notes:
 			</p>
-<pre><code class="language-javascript">_g.popup.lightbox(
+<pre><code class="language-javascript">_g.modal.lightbox(
 	'api',
 	'http://notes.phene.co/diffeq/1ed/read.php',
 	'pages.*',
 	0
 );</code></pre>
 			<p>
-				<a lightbox onclick="_g.pu.lightbox('api','http://notes.phene.co/diffeq/1ed/read.php','pages.*',0);">click here to test</a>
+				<a lightbox onclick="_g.mo.lightbox('api','http://notes.phene.co/diffeq/1ed/read.php','pages.*',0);">click here to test</a>
 			</p>
 		</div>
 		<br><br>
@@ -132,20 +158,20 @@
 			<b><a href="#tutorials">tutorials</a></b><hr>
 			<p>
 				the tutorial framework allows you to create an array of defined steps that the user should follow.
-				running the <code>_g.pu.tutorial()</code> command returns the tutorial as an object.
-				this command has two parameters: first is the array of steps, second is an optional object of parameters to be used when rendering popups.
+				running the <code>_g.mo.tutorial()</code> command returns the tutorial as an object.
+				this command has two parameters: first is the array of steps, second is an optional object of parameters to be used when rendering modals.
 				here is an example tutorial command:
 			</p>
-<pre><code class="language-javascript">var tut = new _g.popup.tutorial(
+<pre><code class="language-javascript">var tut = new _g.modal.tutorial(
 	[
 		{
-			type : "popup",
+			type : "modal",
 			title : "Welcome!",
-			text : "This popup would contain a greeting.",
+			text : "This modal would contain a greeting.",
 			showExitButton : true
 		},
 		{
-			type : "popup",
+			type : "modal",
 			title : "Welcome!",
 			text : "This would be the second info box."
 		}
@@ -156,7 +182,7 @@
 	}
 );</code></pre>
 			<p>
-				<a onclick='new _g.popup.tutorial([{type:"popup",title:"Welcome!",text:"This popup would contain a greeting.",showExitButton:true},{type:"popup",title:"Welcome!",text:"This would be the second info box."}],{titleColor:"#B2E1D9",titleTextColor:"#FFFFFF"});'>click here to test.</a>
+				<a onclick='new _g.modal.tutorial([{type:"modal",title:"Welcome!",text:"This modal would contain a greeting.",showExitButton:true},{type:"modal",title:"Welcome!",text:"This would be the second info box."}],{titleColor:"#B2E1D9",titleTextColor:"#FFFFFF"});'>click here to test.</a>
 			</p>
 		</div>
 		<br><br>

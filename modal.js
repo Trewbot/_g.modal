@@ -1,7 +1,9 @@
 /*
- *	Graphene Popup
+ *	Graphene Modal
  *	Written by Trevor J Hoglund
- *	2017.01.22
+ *	2017.01.27
+ *
+ *	REQUIRES ECMASCRIPT 2015+
  */
 
 function _i(i){return document.getElementById(i);}
@@ -18,6 +20,22 @@ Element.prototype.parentAnchor = function () {
 	}
 	return false;
 }
+Element.prototype.set = function(o){
+	for(var i in o)
+		if(~['styles','style'].indexOf(i) && typeof o[i] === 'object') for(var p in o[i]) this.style[p] = o[i][p];
+		else if(i === 'html') this.innerHTML = o[i];
+		else this.setAttribute(i, o[i]);
+	return this;
+};
+Object.collect		= function(){
+	var ret = {},
+		len = arguments.length;
+	for(var i = 0; i < len; i++)
+		for(p in arguments[i])
+			if(arguments[i].hasOwnProperty(p))
+				ret[p] = arguments[i][p];
+	return ret;
+};
 ajax = function(url, type, header, ops){
 	var r = new XMLHttpRequest(),
 	o = ops || {};
@@ -40,11 +58,7 @@ if(typeof Graphene !== 'object'){
 }
 
 (POPUP_STYLE = document.createElement("style")).innerHTML
-	= '#popup				{position:relative;width:500px;height:auto;margin:auto;background:#fff;vertical-align:middle;}'
-	+ '#popup-shade			{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:1000;display:inline-flex;}'
-	+ '#popup-title			{padding:6px;background:#f8f8f8;width:488px;text-align:center;}'
-	+ '#popup-content		{padding:10px;}'
-	+ '#popup-confirm		{position:relative;width:410px;margin:20px auto auto;}'
+	= '#popup-confirm		{position:relative;width:410px;margin:20px auto auto;}'
 	+ '#popup-yes			{background:#444444;margin-right:10px;}'
 	+ '#popup-no			{background:#ddd;}'
 	+ '.popup-option		{cursor:pointer;padding:8px;width:184px;text-align:center;color:#FFF;display:inline-block;}'
@@ -60,7 +74,7 @@ if(typeof Graphene !== 'object'){
 	+ '#lightbox td			{border:0;padding:0;}';	
 document.documentElement.appendChild(POPUP_STYLE);
 
-_g.pu = (_g.popup = {
+_g.mo = (_g.modal = {
 	lbOpen		: !1,
 	lbBase		: document.URL.split('://')[0] + '://' + document.domain,
 	lbBack		: document.URL,
@@ -69,54 +83,171 @@ _g.pu = (_g.popup = {
 	lbInfo		: {},
 	lbList		: [],
 	lbIndx		: 0,
+	idFarm		: {
+		modal	: (function*(){
+			var i = 0;
+			for(;;) yield (++i)+'_'+(+new Date());
+		})()
+	},
+	style		: {
+		modal	: {
+			approve	: {
+				background		: '#444'
+			},
+			body	: {
+				background		: '#fff',
+				boxShadow		: '0 11px 15px -7px rgba(0,0,0,.2),0 24px 38px 3px rgba(0,0,0,.14),0 9px 46px 8px rgba(0,0,0,.12)',
+				height			: 'auto',
+				margin			: 'auto',
+				position		: 'relative',
+				verticalAlign	: 'middle',
+				width			: '350px',
+				zIndex			: 200
+			},
+			button	: {
+				border			: 0,
+				boxShadow		: '0 1px 5px 0 rgba(0,0,0,.2),0 2px 2px 0 rgba(0,0,0,.14),0 3px 1px -2px rgba(0,0,0,.12)',
+				color			: '#fff',
+				cursor			: 'pointer',
+				display			: 'inline-block',
+				outline			: 0,
+				padding			: '3px',
+				textAlign		: 'center',
+				width			: '75px'
+			},
+			confirm	: {
+				padding			: '0 10px 10px 10px',
+				textAlign		: 'right'
+			},
+			container: {
+				display			: 'inline-flex',
+				height			: '100%',
+				left			: 0,
+				position		: 'fixed',
+				top				: 0,
+				width			: '100%',
+				zIndex			: 2400
+			},
+			content	: {
+				padding			: '10px'
+			},
+			reject	: {
+				background		: '#ccc',
+				marginRight		: '10px'
+			},
+			shade	: {
+				background		: 'rgba(0,0,0,0.6)',
+				height			: '100%',
+				left			: 0,
+				position		: 'absolute',
+				top				: 0,
+				width			: '100%',
+				zIndex			: 100
+			},
+			title	: {
+				background		: '#f8f8f8',
+				color			: '#111',
+				padding			: '6px',
+				textAlign		: 'center',
+				width			: 'calc(100% - 12px)'
+			}
+		}
+	},
 	open		: function(ops){
-		var fhtm =
-			'<div id="popup-shade"><div style="' +
-				(typeof ops.width == 'string'
-					? 'width:' + (parseInt(ops.width) + 20) + 'px;'
-					: '') +
-				'" id="popup">' +
-			(typeof ops.title == 'string' ? '<div id="popup-title" style="' +
-				(typeof ops.titleColor == 'string'
-					? 'background:' + ops.titleColor + ';'
-					: '') +
-				(typeof ops.titleTextColor == 'string'
-					? 'color:' + ops.titleTextColor + ';'
-					: '') +
-				(typeof ops.width == 'string'
-					? 'width:' + (parseInt(ops.width) + 8) + 'px;'
-					: '') +
-				'">' + ops.title + '</div>' : '') +
-			'<div id="popup-content" style="' +
-				(typeof ops.textCenter == 'boolean' && ops.textCenter ? 'text-align:center' : '') + '">' +
-				ops.text +
-				(typeof ops.confirm == 'boolean' && ops.confirm
-					? '<div id="popup-confirm"><div id="popup-yes" class="popup-option" onclick="' + ops.onyes + 'gra_pu_close();">Yes</div><div id="popup-no" class="popup-option" onclick="gra_pu_close();">No</div></div>'
-					: '') +
-			'</div></div></div>';
-		document.body.insertAdjacentHTML('afterbegin', fhtm);
-		window.setTimeout(function(){
-			window.addEventListener('click', function grapopClick(e){
-				if(_i('popup') == null){
-					window.removeEventListener('click', this);
-					return;
-				}
-				var rect = _i('popup').getBoundingClientRect();
-				if(e.clientY > rect.bottom || e.clientY < rect.top || e.pageX > rect.right || e.pageX < rect.left){
-					_i('popup-shade').remove();
-					window.removeEventListener('click', grapopClick);
-				}
+		var id			= _g.mo.idFarm.modal.next().value,
+			modal		= document.createElement('div').set({
+			class		: 'modal',
+			id			: 'modal-' + id,
+			style		: _g.mo.style.modal.container
+		}),
+			modalShade	= document.createElement('div').set({
+			class		: 'modal-shade',
+			id			: 'modal-shade-' + id,
+			style		: _g.mo.style.modal.shade
+		}),
+			modalBody	= document.createElement('div').set({
+			class		: 'modal-body',
+			id			: 'modal-body-' + id,
+			style		: _g.mo.style.modal.body
+		}),
+			modalTitle	= document.createElement('div').set({
+			class		: 'modal-title',
+			html		: typeof ops.title == 'string' ? ops.title : '',
+			id			: 'modal-title-' + id,
+			style		: Object.collect(_g.mo.style.modal.title,{
+				background	: typeof ops.titleColor == 'string'		? ops.titleColor		: _g.mo.style.modal.title.background,
+				color		: typeof ops.titleTextColor == 'string'	? ops.titleTextColor	: _g.mo.style.modal.title.color,
+				display		: typeof ops.title == 'string'			? 'block'				: 'none'
+			})
+		}),
+			modalContent= document.createElement('div').set({
+			class		: 'modal-content',
+			html		: ops.text,
+			id			: 'modal-content-' + id,
+			style		: Object.collect(_g.mo.style.modal.content,{
+				textAlign	: typeof ops.textCenter == 'boolean' && ops.textCenter ? 'center' : ''
+			})
+		});
+		
+		modalBody.appendChild(modalTitle);
+		modalBody.appendChild(modalContent);
+		
+		if(typeof ops.confirm == 'boolean' && ops.confirm){
+			var modalConfirm= document.createElement('div').set({
+				class		: 'modal-confirm',
+				id			: 'modal-confirm-' + id,
+				style		: _g.mo.style.modal.confirm
+			}),
+				modalApprove= document.createElement('div').set({
+				class		: 'modal-approve',
+				html		: 'Yes',
+				id			: 'modal-approve-' + id,
+				style		: Object.collect(
+					_g.mo.style.modal.button,
+					_g.mo.style.modal.approve
+				)
+			}),
+				modalReject	= document.createElement('div').set({
+				class		: 'modal-reject',
+				html		: 'No',
+				id			: 'modal-reject-' + id,
+				style		: Object.collect(
+					_g.mo.style.modal.button,
+					_g.mo.style.modal.reject
+				)
 			});
+			modalConfirm.appendChild(modalReject);
+			modalConfirm.appendChild(modalApprove);
+			modalBody.appendChild(modalConfirm);
+		}
+		
+		modal.appendChild(modalShade);
+		modal.appendChild(modalBody);
+		
+		document.body.insertBefore(modal, document.body.children[0]);
+		
+		window.setTimeout(function(){
+			_c('modal-shade')[0].addEventListener('click', function(){_c('modal')[0].remove();});
 		}, 0);
+		
+		if(typeof ops.confirm == 'boolean' && ops.confirm)
+			return new Promise(function(resolve,reject){
+				_c('modal-approve')[0].addEventListener('click',resolve);
+				_c('modal-approve')[0].addEventListener('click',function(){_c('modal')[0].remove();});
+				
+				_c('modal-reject')[0].addEventListener('click',reject);
+				_c('modal-shade')[0].addEventListener('click',reject);
+				_c('modal-reject')[0].addEventListener('click',function(){_c('modal')[0].remove();});
+			});
 	},
 	lightbox	: function(type,source,layout,index){
-		_g.pu.lbBack = document.URL;
-		_g.pu.lbIndx = index;
-		_g.pu.lbSrc  = source;
-		_g.pu.lbLayt = layout;
+		_g.mo.lbBack = document.URL;
+		_g.mo.lbIndx = index;
+		_g.mo.lbSrc  = source;
+		_g.mo.lbLayt = layout;
 		var open = function(){
 			layout = layout.split('.');
-			for(var i = 0, click = !1, list = JSON.parse(JSON.stringify(_g.pu.lbInfo[source])); i < layout.length; i++){
+			for(var i = 0, click = !1, list = JSON.parse(JSON.stringify(_g.mo.lbInfo[source])); i < layout.length; i++){
 				if(!click && layout[i] !== '*') list = list[layout[i]];
 				else {
 					click = !0;
@@ -124,12 +255,12 @@ _g.pu = (_g.popup = {
 					else for(var j = 0; j < list.length; j++) list[j] = list[j][layout[i]];
 				}
 			}
-			_g.pu.lbList = list;
-			if(typeof _g.pu.lbIndx == "string") _g.pu.lbIndx = list.indexOf(_g.pu.lbIndx);
-			if(_g.pu.lbIndx < 0) _g.pu.lbIndx = 0;
-			if(_g.pu.lbIndx >= list.length) _g.pu.lbIndx = list.length - 1;
+			_g.mo.lbList = list;
+			if(typeof _g.mo.lbIndx == "string") _g.mo.lbIndx = list.indexOf(_g.mo.lbIndx);
+			if(_g.mo.lbIndx < 0) _g.mo.lbIndx = 0;
+			if(_g.mo.lbIndx >= list.length) _g.mo.lbIndx = list.length - 1;
 			var img = new Image();
-			img.src = _g.pu.lbList[_g.pu.lbIndx];
+			img.src = _g.mo.lbList[_g.mo.lbIndx];
 			img.onload = function(){
 				var wh = window.innerHeight,
 					ww = window.innerWidth,
@@ -152,8 +283,8 @@ _g.pu = (_g.popup = {
 				if(lbv.style.width == '' || parseInt(lbv.style.width) < lbw) lbv.style.width = lbw + "px";
 				if(lbv.style.height == '' || parseInt(lbv.style.height) < lbh) lbv.style.height = lbh + "px";
 				_i('lightbox-prev').style.width = parseInt(lbv.style.width) - 150 + "px";
-				_i('lightbox-prev').parentAnchor().onclick = function(){_g.pu.lightbox('api',_g.pu.lbSrc,_g.pu.lbLayt,++_g.pu.lbIndx)};
-				_i('lightbox-next').parentAnchor().onclick = function(){_g.pu.lightbox('api',_g.pu.lbSrc,_g.pu.lbLayt,--_g.pu.lbIndx)};
+				_i('lightbox-prev').parentAnchor().onclick = function(){_g.mo.lightbox('api',_g.mo.lbSrc,_g.mo.lbLayt,++_g.mo.lbIndx)};
+				_i('lightbox-next').parentAnchor().onclick = function(){_g.mo.lightbox('api',_g.mo.lbSrc,_g.mo.lbLayt,--_g.mo.lbIndx)};
 				
 				var lbm = document.createElement('img');
 				lbm.src = img.src;
@@ -164,38 +295,38 @@ _g.pu = (_g.popup = {
 			}
 		};
 		
-		if(!_g.pu.lbOpen){
+		if(!_g.mo.lbOpen){
 			var lb = document.createElement('div');
 			lb.id = 'lightbox-shade';
 			lb.innerHTML = '<div id="lightbox"><table><tr><td style="font-size:0px;"><div id="lightbox-view"><a lightbox><div id="lightbox-next"></div></a><a lightbox><div id="lightbox-prev"></div></a></div></td>' + /* '<td style="vertical-align:top;"><div id="lightbox-comments"><div class="post-header"><a><img class="post-avatar"></a><div class="post-name"><a><b>Loading...</b></a></div><div class="post-time"><a>Loading...</a></div></div><div class="post-content"><br><br><br><br><br><br></div></div></td>' + */ '</tr></table></div>';
 			document.body.insertBefore(lb, document.body.children[0]);
 			window.setTimeout(function(){
-				window.addEventListener('click', _g.pu.lbClick);
+				window.addEventListener('click', _g.mo.lbClick);
 			}, 500);
-			_g.pu.lbOpen = !0;
+			_g.mo.lbOpen = !0;
 		} else var lb = _i('lightbox-shade');
 		
 		if(type == 'api'){
-			if(typeof _g.pu.lbInfo[source] == 'undefined') new ajax(source, 'GET', '', {cred:false,load:function(res){
-				_g.pu.lbInfo[source] = JSON.parse(res.response);
+			if(typeof _g.mo.lbInfo[source] == 'undefined') new ajax(source, 'GET', '', {cred:false,load:function(res){
+				_g.mo.lbInfo[source] = JSON.parse(res.response);
 				open();
 			}}); else open();
 		} else {
-			_g.pu.lbInfo[source] = JSON.parse(source);
+			_g.mo.lbInfo[source] = JSON.parse(source);
 			open();
 		}
 	},
 	lbClick 	: function(e){
 		if(_i('lightbox') == null){
-			window.removeEventListener('click', _g.pu.lbClick);
+			window.removeEventListener('click', _g.mo.lbClick);
 			return;
 		}
 		var rect = _i('lightbox').getBoundingClientRect();
 		if(e.clientY > rect.bottom || e.clientY < rect.top || e.pageX > rect.right || e.pageX < rect.left){
-			_g.pu.lbOpen = !1;
-			_g.pu.lbList = [];
+			_g.mo.lbOpen = !1;
+			_g.mo.lbList = [];
 			_i('lightbox-shade').remove();
-			window.removeEventListener('click', _g.pu.lbClick);
+			window.removeEventListener('click', _g.mo.lbClick);
 		}
 	},
 	tutorial	: function(steps, ops){
@@ -207,7 +338,7 @@ _g.pu = (_g.popup = {
 			if(this.step >= this.steps.length) return 0;
 			step = this.steps[this.step];
 			if(step.type.toLowerCase() == "popup"){
-				_g.pu.open(_g.pu.collect(this.ops,{
+				_g.mo.open(_g.mo.collect(this.ops,{
 					title	: step.title || "Step " + this.step,
 					text	: step.text +
 						'<div id="popup-confirm"><div style="' + 
@@ -257,7 +388,7 @@ _g.pu = (_g.popup = {
 		["v0.1.0.0009","Mar 24, 2015","Added lightbox opening script."],
 		["v0.1.0.0010","Mar 24, 2015","Fixed API calls having credentials set to true."],
 		["v0.1.0.0010","Mar 24, 2015","Added lightbox navigation."],
-		["v0.1.0.0010","Mar 24, 2015","Fixed _g.pu.lbIndx being below 0."],
+		["v0.1.0.0010","Mar 24, 2015","Fixed _g.mo.lbIndx being below 0."],
 		["v0.1.0.0010","Mar 24, 2015","Fixed lightbox navigation direction."],
 		["v0.1.0.0011","Mar 24, 2015","Added lightbox closing script."],
 		["v0.1.0.0012","May 15, 2015","Changed lightbox naviagtion links' actions to onclick rather than href."],
@@ -276,13 +407,16 @@ _g.pu = (_g.popup = {
 		["p0.2.0.0022","Jun 27, 2016","Fixed object source lightboxes (must be JSON string)"],
 		["p0.2.0.0023","Jun 29, 2016","Fixed layouts with names after * failing"],
 		["p0.2.0.0024","Jun 29, 2016","Added option to set index based on url of image"],
-		["p0.2.0.0025","Jan 22, 2017","Refactoring"]
+		["p0.2.0.0025","Jan 22, 2017","Refactoring"],
+		["l0.3.0.0026","Jan 27, 2017","Ranamed to Modal"],
+		["l0.3.0.0027","Jan 27, 2017","Moved modal styling to _g.mo.style.modal"],
+		["l0.3.0.0028","Jan 27, 2017","Added Promise for confirm"]
 	]
 });
 
 window.addEventListener('keyup', function(e){
-	if(_g.pu.lbOpen){
+	if(_g.mo.lbOpen){
 		e.preventDefault();
-		~[39,40,68].indexOf(e.keyCode) ? _g.pu.lightbox('api',_g.pu.lbSrc,_g.pu.lbLayt,++_g.pu.lbIndx) : ~[37,38,65].indexOf(e.keyCode) ? _g.pu.lightbox('api',_g.pu.lbSrc,_g.pu.lbLayt,--_g.pu.lbIndx) : !1;
+		~[39,40,68].indexOf(e.keyCode) ? _g.mo.lightbox('api',_g.mo.lbSrc,_g.mo.lbLayt,++_g.mo.lbIndx) : ~[37,38,65].indexOf(e.keyCode) ? _g.mo.lightbox('api',_g.mo.lbSrc,_g.mo.lbLayt,--_g.mo.lbIndx) : !1;
 	}
 });
