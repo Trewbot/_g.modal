@@ -149,19 +149,24 @@
 					document.getElementsByClassName('content is-blurred')[0].className = 'content';
 				}
 				window.effectOn = function(){
+					_g.mo.style.modal.shade.background = 'rgba(0,0,0,0.1)';
 					window.addEventListener('MODAL_OPEN',modalOpen);
 					window.addEventListener('MODAL_CLOSE',modalClose);
 				}
 				window.effectOff = function(){
+					_g.mo.style.modal.shade.background = 'rgba(0,0,0,0.6)';
 					window.removeEventListener('MODAL_OPEN',modalOpen);
 					window.removeEventListener('MODAL_CLOSE',modalClose);
 				}
 			</script>
-<pre><code class="language-javascript">window.addEventListener('MODAL_OPEN',function(){
+<pre><code class="language-javascript">_g.mo.style.modal.shade.background = 'rgba(0,0,0,0.1)';
+
+window.addEventListener('MODAL_OPEN',function(){
 	document
 		.getElementsByClassName('content')[0]
 		.className = 'content is-blurred';
 });
+
 window.addEventListener('MODAL_CLOSE',function(){
 	document
 		.getElementsByClassName('content is-blurred')[0]
