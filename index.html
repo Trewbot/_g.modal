@@ -18,10 +18,10 @@
 			<b><a href="#start">getting started</a></b><hr>
 			<p>
 				to begin using the modal script, one must first include the library in the html file.
-				<a target="_blank" href="http://scripts.phene.co/modal/0.3.0.0028.min">the source file can be downloaded here and put on a cdn</a>
+				<a target="_blank" href="http://scripts.phene.co/modal/0.3.0.0029.min">the source file can be downloaded here and put on a cdn</a>
 				or use the following script tag to include it directly from phene.co:
 			</p>
-			<pre><code class="language-markup">&lt;script src="http://scripts.phene.co/modal/0.3.0.0028"&gt;&lt;/script&gt;</code></pre>
+			<pre><code class="language-markup">&lt;script src="http://scripts.phene.co/modal/0.3.0.0029"&gt;&lt;/script&gt;</code></pre>
 		</div>
 		<br><br>
 		<br><br>
@@ -112,8 +112,70 @@
 				<a onclick="_g.modal.open({title:'Approval Required!',text:'Allow this action?',confirm:true}).then(()=>window.setTimeout(()=>{_g.mo.open({text:'Approved',textCenter:true})},0),()=>window.setTimeout(()=>{_g.mo.open({text:'Rejected',textCenter:true})},0));">click here to test.</a>	
 			</p>
 		</div>
+		
 		<br><br>
 		<br><br>
+		
+		<div id="info-modal-events">
+			<b><a href="#info-modal-events">informational modal events</a></b>
+			<p>
+				an informational modal will fire the following events:
+			</p>
+			<table>
+				<thead>
+					<td>event:</td>
+					<td>fired when:</td>
+				</thead>
+				<tr>
+					<td>MODAL_OPEN</td>
+					<td>the modal is opened, after insertion into document</td>
+				</tr>
+				<tr>
+					<td>MODAL_CLOSE</td>
+					<td>the modal is closed, after removal from document</td>
+				</tr>
+			</table>
+			<p>
+				these events can be used to further integrate the modals into the user itnerface.
+				as an example, the body of the document can be blurred by adding a class with some styling and appending said class name to the content element.
+			</p>
+<pre><code class="language-css">.content				{transition:filter 0.3s;}
+.content.is-blurred		{filter:blur(3px);}</code></pre>
+			<script>
+				window.modalOpen = function(){
+					document.getElementsByClassName('content')[0].className = 'content is-blurred';
+				};
+				window.modalClose = function(){
+					document.getElementsByClassName('content is-blurred')[0].className = 'content';
+				}
+				window.effectOn = function(){
+					window.addEventListener('MODAL_OPEN',modalOpen);
+					window.addEventListener('MODAL_CLOSE',modalClose);
+				}
+				window.effectOff = function(){
+					window.removeEventListener('MODAL_OPEN',modalOpen);
+					window.removeEventListener('MODAL_CLOSE',modalClose);
+				}
+			</script>
+<pre><code class="language-javascript">window.addEventListener('MODAL_OPEN',function(){
+	document
+		.getElementsByClassName('content')[0]
+		.className = 'content is-blurred';
+});
+window.addEventListener('MODAL_CLOSE',function(){
+	document
+		.getElementsByClassName('content is-blurred')[0]
+		.className = 'content';
+});</code></pre>
+			<p>
+				this can be seen by toggling this example <a href="javascript:effectOn();">ON</a> and <a href="javascript:effectOff();">OFF</a>.
+				<a onclick="_g.mo.open({title:'Test',text:'This modal is a test.'});">then opening a test modal by clicking here.</a>
+			</p>
+		</div>
+		
+		<br><br>
+		<br><br>
+		
 		<div id="lightboxes">
 			<b><a href="#lightboxes">lightboxes</a></b><hr>
 			<p>
