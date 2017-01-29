@@ -62,16 +62,7 @@ if(typeof Graphene !== 'object'){
 	+ '#popup-yes			{background:#444444;margin-right:10px;}'
 	+ '#popup-no			{background:#ddd;}'
 	+ '.popup-option		{cursor:pointer;padding:8px;width:184px;text-align:center;color:#FFF;display:inline-block;}'
-	+ '.popup-button		{padding:6px;width:200px;background:#444444;color:#fff;margin:auto;margin-top:10px;font-weight:bold;text-align:center;cursor:pointer;}'
-	+ '#lightbox			{position:relative;min-width:500px;height:auto;margin:auto;background:#fff;vertical-align:middle;}'
-	+ '#lightbox-shade		{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:1000;display:inline-flex;}'
-	+ '#lightbox-view		{position:relative;min-width:500px;background:#000;display:inline-flex;min-width:500px;min-height:500px;}'
-	+ '#lightbox-image		{margin:auto;vertical-align:middle;display:block;}'
-	+ '#lightbox-comments	{width:300px;text-align:top;}'
-	+ '#lightbox-prev		{position:absolute;cursor:pointer;z-index:1;height:100%;top:0;right:0;}'
-	+ '#lightbox-next		{position:absolute;cursor:pointer;z-index:1;width:150px;height:100%;top:0;left:0;}'
-	+ '#lightbox table		{border:0;padding:0;margin:0;}'
-	+ '#lightbox td			{border:0;padding:0;}';
+	+ '.popup-button		{padding:6px;width:200px;background:#444444;color:#fff;margin:auto;margin-top:10px;font-weight:bold;text-align:center;cursor:pointer;}';
 document.documentElement.appendChild(POPUP_STYLE);
 
 _g.mo = (_g.modal = {
@@ -150,6 +141,73 @@ _g.mo = (_g.modal = {
 				padding			: '6px',
 				textAlign		: 'center',
 				width			: 'calc(100% - 12px)'
+			}
+		},
+		lightbox: {
+			body	: {
+				background		: '#fff',
+				height			: 'auto',
+				position		: 'relative',
+				margin			: 'auto',
+				minWidth		: '500px',
+				verticalAlign	: 'middle'
+			},
+			comments: {
+				textAlign		: 'top',
+				width			: '300px'
+			},
+			image	: {
+				display			: 'block',
+				margin			: 'auto',
+				verticalAlign	: 'middle'
+			},
+			next	: {
+				cursor			: 'pointer',
+				height			: '100%',
+				left			: 0,
+				position		: 'absolute',
+				top				: 0,
+				width			: '150px',
+				zIndex			: 1
+			},
+			prev	: {
+				cursor			: 'pointer',
+				height			: '100%',
+				position		: 'absolute',
+				right			: 0,
+				top				: 0,
+				zIndex			: 1
+			},
+			shade	: {
+				background		: 'rgba(0,0,0,0.6)',
+				display			: 'inline-flex',
+				height			: '100%',
+				left			: 0,
+				position		: 'fixed',
+				top				: 0,
+				width			: '100%',
+				zIndex			: 2400
+			},
+			table	: {
+				border			: 0,
+				padding			: 0,
+				margin			: 0
+			},
+			td		: {
+				border			: 0,
+				fontSize		: 0,
+				padding			: 0
+			},
+			tr		: {
+				border			: 0,
+				padding			: 0
+			},
+			view	: {
+				background		: '#000',
+				display			: 'inline-flex',
+				position		: 'relative',
+				minHeight		: '500px',
+				minWidth		: '500px'
 			}
 		}
 	},
@@ -277,42 +335,109 @@ _g.mo = (_g.modal = {
 					lbw,
 					lbh,
 					j,
-					lbe = _i('lightbox'),
-					lbv = _i('lightbox-view');
+					lbe = _c('lightbox')[0],
+					lbv = _c('lightbox-view')[0];
 				
 				if(iw > (j = Math.max(500, ww - 100))) lbw = j, lbh = (j / iw) * ih;
 				else lbw = iw, lbh = ih;
 				
 				if(lbh > (j = wh - 100)) lbw = (j / ih) * iw, lbh = j;
 
-				var olbi = _i('lightbox-image');
+				var olbi = _c('lightbox-image')[0];
 				if(olbi !== null) olbi.remove();
 
 				if(lbv.style.width == '' || parseInt(lbv.style.width) < lbw) lbv.style.width = lbw + "px";
 				if(lbv.style.height == '' || parseInt(lbv.style.height) < lbh) lbv.style.height = lbh + "px";
-				_i('lightbox-prev').style.width = parseInt(lbv.style.width) - 150 + "px";
-				_i('lightbox-prev').parentAnchor().onclick = function(){_g.mo.lightbox('api',_g.mo.lbSrc,_g.mo.lbLayt,++_g.mo.lbIndx)};
-				_i('lightbox-next').parentAnchor().onclick = function(){_g.mo.lightbox('api',_g.mo.lbSrc,_g.mo.lbLayt,--_g.mo.lbIndx)};
+				_c('lightbox-prev')[0].style.width = parseInt(lbv.style.width) - 150 + "px";
+				_c('lightbox-prev')[0].parentAnchor().onclick = function(){_g.mo.lightbox('api',_g.mo.lbSrc,_g.mo.lbLayt,++_g.mo.lbIndx)};
+				_c('lightbox-next')[0].parentAnchor().onclick = function(){_g.mo.lightbox('api',_g.mo.lbSrc,_g.mo.lbLayt,--_g.mo.lbIndx)};
 				
-				var lbm = document.createElement('img');
-				lbm.src = img.src;
-				lbm.id = 'lightbox-image';
-				lbm.style.width = lbw + 'px';
-				lbm.style.height = lbh + 'px';
+				var lbm = document.createElement('img').set({
+					class 	: 'lightbox-image',
+					src		: img.src,
+					style	: Object.collect({
+							height	: lbh + 'px',
+							width	: lbw + 'px'
+						},_g.mo.style.lightbox.image)
+				});
 				lbv.insertBefore(lbm, lbv.children[0]);
 			}
 		};
 		
 		if(!_g.mo.lbOpen){
-			var lb = document.createElement('div');
-			lb.id = 'lightbox-shade';
-			lb.innerHTML = '<div id="lightbox"><table><tr><td style="font-size:0px;"><div id="lightbox-view"><a lightbox><div id="lightbox-next"></div></a><a lightbox><div id="lightbox-prev"></div></a></div></td>' + /* '<td style="vertical-align:top;"><div id="lightbox-comments"><div class="post-header"><a><img class="post-avatar"></a><div class="post-name"><a><b>Loading...</b></a></div><div class="post-time"><a>Loading...</a></div></div><div class="post-content"><br><br><br><br><br><br></div></div></td>' + */ '</tr></table></div>';
-			document.body.insertBefore(lb, document.body.children[0]);
+			var id			= _g.mo.idFarm.modal.next().value,
+				lbox		= document.createElement('div').set({
+				class		: 'lightbox-shade',
+				id			: 'lightbox-shade-' + id,
+				style		: _g.mo.style.lightbox.shade
+			}),
+				lboxBodt	= lbox.appendChild(
+				document.createElement('table').set({
+					class		: 'lightbox',
+					id			: 'lightbox-' + id,
+					style		: _g.mo.style.lightbox.body
+				})
+			),
+				lboxTable	= lboxBodt.appendChild(
+				document.createElement('table').set({
+					class		: 'lightbox-table',
+					id			: 'lightbox-table-' + id,
+					style		: _g.mo.style.lightbox.table
+				})
+			),
+				lboxRow		= lboxTable.appendChild(
+				document.createElement('tr').set({
+					class		: 'lightbox-row',
+					id			: 'lightbox-row-' + id,
+					style		: _g.mo.style.lightbox.tr
+				})
+			),
+				lboxCell	= lboxRow.appendChild(
+				document.createElement('td').set({
+					class		: 'lightbox-cell',
+					id			: 'lightbox-cell-' + id,
+					style		: _g.mo.style.lightbox.td
+				})
+			),
+				lboxView	= lboxCell.appendChild(
+				document.createElement('div').set({
+					class		: 'lightbox-view',
+					id			: 'lightbox-view-' + id,
+					style		: _g.mo.style.lightbox.view
+				})
+			),
+				lboxNextA	= lboxView.appendChild(
+				document.createElement('a').set({
+					lightbox	: true
+				})
+			),
+				lboxNext	= lboxNextA.appendChild(
+				document.createElement('div').set({
+					class		: 'lightbox-next',
+					id			: 'lightbox-next-' + id,
+					style		: _g.mo.style.lightbox.next
+				})
+			),
+				lboxPrevA	= lboxView.appendChild(
+				document.createElement('a').set({
+					lightbox	: true
+				})
+			),
+				lboxPrev	= lboxPrevA.appendChild(
+				document.createElement('div').set({
+					class		: 'lightbox-prev',
+					id			: 'lightbox-prev-' + id,
+					style		: _g.mo.style.lightbox.prev
+				})
+			);
+
+			
+			document.body.insertBefore(lbox, document.body.children[0]);
 			window.setTimeout(function(){
 				window.addEventListener('click', _g.mo.lbClick);
 			}, 500);
 			_g.mo.lbOpen = !0;
-		} else var lb = _i('lightbox-shade');
+		} else var lb = _c('lightbox-shade')[0];
 		
 		if(type == 'api'){
 			if(typeof _g.mo.lbInfo[source] == 'undefined') new ajax(source, 'GET', '', {cred:false,load:function(res){
@@ -325,15 +450,15 @@ _g.mo = (_g.modal = {
 		}
 	},
 	lbClick 	: function(e){
-		if(_i('lightbox') == null){
+		if(_c('lightbox')[0] == null){
 			window.removeEventListener('click', _g.mo.lbClick);
 			return;
 		}
-		var rect = _i('lightbox').getBoundingClientRect();
+		var rect = _c('lightbox')[0].getBoundingClientRect();
 		if(e.clientY > rect.bottom || e.clientY < rect.top || e.pageX > rect.right || e.pageX < rect.left){
 			_g.mo.lbOpen = !1;
 			_g.mo.lbList = [];
-			_i('lightbox-shade').remove();
+			_c('lightbox-shade')[0].remove();
 			window.removeEventListener('click', _g.mo.lbClick);
 		}
 	},
@@ -419,7 +544,8 @@ _g.mo = (_g.modal = {
 		["l0.3.0.0026","Jan 27, 2017","Ranamed to Modal"],
 		["l0.3.0.0027","Jan 27, 2017","Moved modal styling to _g.mo.style.modal"],
 		["l0.3.0.0028","Jan 27, 2017","Added Promise for confirm"],
-		["l0.3.0.0029","Jan 28, 2017","Added Event for MODAL_OPEN and MODAL_CLOSE"]
+		["l0.3.0.0029","Jan 28, 2017","Added Event for MODAL_OPEN and MODAL_CLOSE"],
+		["l0.3.0.0030","Jan 29, 2017","Moved lightbox styling to _g.mo.style.lightbox"]
 	]
 });
 
